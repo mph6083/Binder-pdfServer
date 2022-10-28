@@ -1,7 +1,6 @@
 import child_process from 'child_process';
 import express from 'express';
 import {renderEpub, HttpError}  from './render';
-import { ParsedQs } from 'qs';
 
 const fileUpload = require("express-fileupload");
 const app = express()

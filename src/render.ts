@@ -31,7 +31,12 @@ export function renderEpub(req: any, res: any):string {
  * @returns path to html file to render
  */
 function findHTML(uid:string):string {
-    const htmlPaths = glob.sync('./uploads/' + uid + "/**/*.html");
+    let htmlPaths = glob.sync('./uploads/' + uid + "/**/*.html");
+    if(htmlPaths.length == 0){
+        htmlPaths = glob.sync('./uploads/' + uid + "/**/*.xhtml");
+    }
+    console.log("HTML PATH UP NEDXT");
+    console.log(htmlPaths[0]);
     return htmlPaths[0];
 }
 
@@ -66,7 +71,14 @@ function unzip(uid:string) {
     if (opsys == "win32") {
         let mkdirCommand = `mkdir uploads\\${uid}`;
         child_process.execSync(mkdirCommand);
-        child_process.execSync(`tar -xf ./uploads/${uid}.zip -C ./uploads/${uid}`);
+        let tarCommand = `tar -xf ./uploads/${uid}.zip -C ./uploads/${uid}`
+        console.log(tarCommand)
+        try{
+        child_process.execSync(tarCommand);
+        }
+        catch(e:any){
+            child_process.execSync(tarCommand);
+        }
     }
     else {
         child_process.execSync(`unzip ./uploads/${uid}.zip `);
@@ -74,7 +86,9 @@ function unzip(uid:string) {
 }
 
 function generatePdf(htmlPath:string, epubPath:string, options:object = undefined) {
-    child_process.execSync(`npx pagedjs-cli ${htmlPath} -o ${epubPath}.pdf`);
+    const paged_command = `npx pagedjs-cli -d ${htmlPath} -o ${epubPath}.pdf`
+    console.log(paged_command)
+    child_process.execSync(paged_command);
 }
 
 export class HttpError extends Error {

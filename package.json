@@ -8,15 +8,17 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.2",
+        "@types/express-serve-static-core": "^4.17.24",
         "@types/glob": "^8.0.0",
         "@types/uuid": "^8.3.4",
-        "@types/express-serve-static-core": "^4.17.24"
+        "typescript": "^4.8.4"
     },
     "dependencies": {
         "express": "^4.18.2",
         "express-fileupload": "^1.4.0",
+        "glob": "^8.0.3",
         "mime": "^3.0.0",
-        "typescript": "^4.8.4",
+        "pagedjs-cli": "^0.2.1",
         "uuid": "^9.0.0"
     }
 }
