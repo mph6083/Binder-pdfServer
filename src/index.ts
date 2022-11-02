@@ -3,7 +3,10 @@ import express from 'express';
 import {renderEpub, HttpError}  from './render';
 
 const fileUpload = require("express-fileupload");
-const app = express()
+var cors = require('cors')
+var app = express()
+
+
 
 const opsys = process.platform
 const PORT:any = (opsys == "win32") ? 3000 : 8080;
@@ -26,7 +29,7 @@ process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
 process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 
-
+app.use(cors())
 app.use(fileUpload({
   createParentPath: true,
   useTempFiles: true,
@@ -53,7 +56,7 @@ app.get('/', (req, res) => {
 
 app.post('/upload', async (req: any, res: any) => {
   try{
-    let file:string = renderEpub(req,res);
+    let file:string = await renderEpub(req,res);
     res.sendFile(file);
   }
   catch(e:any){

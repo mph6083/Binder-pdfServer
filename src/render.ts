@@ -7,9 +7,10 @@ import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import child_process from 'child_process';
+import { setTimeout } from 'timers/promises';
 
 
-export function renderEpub(req: any, res: any):string {
+export async function renderEpub(req: any, res: any):Promise<string> {
 
     let uid: string = fileVerification(req);
     if (uid == ""){
@@ -19,7 +20,7 @@ export function renderEpub(req: any, res: any):string {
     unzip(uid);
     const htmlPath: string = findHTML(uid);
     const epubPath = './uploads/' + uid;
-    generatePdf(htmlPath,epubPath);
+    await generatePdf(htmlPath,epubPath);
     return  process.cwd() + "\\uploads\\" + uid + ".pdf"
 }
 
@@ -51,6 +52,7 @@ function fileVerification(req:any):string {
         throw new HttpError(400, "ebook file not found");
     }
     let ebook = req.files.ebook;
+    console.log(ebook.mimetype);
     if (!(ebook.mimetype == "application/zip" || ebook.mimetype == "application/epub+zip")) {
         throw new HttpError(415, "ebook not of zip or epub type");
     }
@@ -85,10 +87,11 @@ function unzip(uid:string) {
     }
 }
 
-function generatePdf(htmlPath:string, epubPath:string, options:object = undefined) {
-    const paged_command = `npx pagedjs-cli -d ${htmlPath} -o ${epubPath}.pdf`
-    console.log(paged_command)
+async function generatePdf(htmlPath:string, epubPath:string, options:object = undefined) {
+    const paged_command = `npx pagedjs-cli  ${htmlPath} -o ${epubPath}.pdf`;
     child_process.execSync(paged_command);
+    // child_process.execSync(paged_command,{"timeout":(1000*60*10)});
+    
 }
 
 export class HttpError extends Error {
