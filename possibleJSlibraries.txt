@@ -7,3 +7,4 @@ nodeice
 Electron
 PDFObject
 pdf2json
+wasmpdf

@@ -15,14 +15,7 @@ export async function renderEpub(req: any, res: any): Promise<string> {
     unzip(uid);
     const htmlPath: string = findHTML(uid);
     const epubPath = './uploads/' + uid;
-    const options = getOptions(req.rawHeaders);
-    if (options) {
-        console.log(options);
-        await generatePdf(htmlPath, epubPath, options);
-    }
-    else {
         await generatePdf(htmlPath, epubPath);
-    }
 
     return process.cwd() + "\\uploads\\" + uid + ".pdf";
 }
