@@ -27,25 +27,6 @@ export async function renderEpub(req: any, res: any): Promise<string> {
     return process.cwd() + "\\uploads\\" + uid + ".pdf";
 }
 
-function getOptions(rawHeaders: string[]): Object | undefined {
-    if (rawHeaders.length == 0) {
-        return undefined;
-    }
-    let options = { width: 0, height: 0 };
-    for (let i = 0; i < rawHeaders.length; i++) {
-        if (rawHeaders[i].toUpperCase() == "Binder-Width".toUpperCase()) {
-            options.width = parseInt(rawHeaders[i + 1]);
-        }
-        if (rawHeaders[i].toUpperCase() == "Binder-Height".toUpperCase()) {
-            options.height = parseInt(rawHeaders[i + 1]);
-        }
-        if (options.width && options.height) {
-            return options;
-        }
-    }
-    return undefined;
-}
-
 /**
  * takes the uid and returns the first HTML file in the unzipped directory
  * @param uid uid of the current session
@@ -111,10 +92,10 @@ async function generatePdf(htmlPath: string, epubPath: string, options: any = un
     let paged_command = "";
     if (options) {
         console.log("with pagedjs")
-        paged_command = `npx pagedjs-cli  -w ${options.width} -h ${options.height} ${htmlPath} -o ${epubPath}.pdf`;
+        paged_command = `npx pagedjs-cli -r -w ${options.width} -h ${options.height} ${htmlPath} -o ${epubPath}.pdf`;
     }
     else {
-        paged_command = `npx pagedjs-cli  ${htmlPath} -o ${epubPath}.pdf`;
+        paged_command = `npx pagedjs-cli -r ${htmlPath} -o ${epubPath}.pdf`;
     }
     console.log(paged_command);
     child_process.execSync(paged_command);
